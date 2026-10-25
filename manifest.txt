@@ -54,3 +54,7 @@ $HOME/Desktop/AI CLI WORK/Scripts/backup-system-configs.sh	bin/backup-system-con
 
 # --- System launcher toggle ---
 /usr/local/bin/xfce-launcher-toggle	bin/xfce-launcher-toggle
+
+# --- Assistant & Domain Skills ---
+$HOME/Desktop/AI CLI WORK/.agents/skills/endeavouros-assistant/SKILL.md	skills/endeavouros-assistant/SKILL.md
+$HOME/Desktop/AI CLI WORK/.agents/skills/audio-engineer/SKILL.md	skills/audio-engineer/SKILL.md
