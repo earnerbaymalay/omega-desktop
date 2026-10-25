@@ -28,7 +28,7 @@
     </property>
     <property name="panel-3" type="empty">
       <property name="position" type="string" value="p=6;x=960;y=14"/>
-      <property name="position-locked" type="bool" value="true"/>
+      <property name="position-locked" type="bool" value="false"/>
       <property name="length" type="double" value="100"/>
       <property name="size" type="uint" value="28"/>
       <property name="icon-size" type="uint" value="16"/>
@@ -57,6 +57,7 @@
         <value type="int" value="6"/>
         <value type="int" value="23"/>
         <value type="int" value="24"/>
+        <value type="int" value="32"/>
       </property>
     </property>
   </property>
@@ -174,5 +175,6 @@
       <property name="font" type="string" value="JetBrainsMono Nerd Font Propo 10"/>
     </property>
     <property name="plugin-30" type="string" value="separator"/>
+    <property name="plugin-32" type="string" value="windowmenu"/>
   </property>
 </channel>
