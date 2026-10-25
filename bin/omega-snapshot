@@ -1,0 +1,281 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# omega-snapshot — sanitized, allowlist-driven snapshot of the desktop setup.
+#
+#   omega-snapshot "<reason>"      copy -> redact -> leak-gate -> commit -> push
+#   omega-snapshot "<reason>" --force     bypass the 10-minute debounce
+#   omega-snapshot "<reason>" --dry-run   copy+redact+leak-gate to a temp dir,
+#                                         print the file list, no commit
+#
+# Privacy model: ONLY paths in manifest.txt are copied. A literal substitution
+# table (~/.config/omega/redact.tsv, kept OUTSIDE the repo) plus generic
+# MAC/email/private-IP regexes scrub every copied text file. A leak gate then
+# greps the tree for any leftover secret literal or MAC/email and aborts if
+# anything remains. Nothing identifying reaches a commit.
+# ==============================================================================
+
+set -euo pipefail
+
+REPO="${OMEGA_REPO:-$HOME/omega-desktop}"
+MANIFEST="$REPO/manifest.txt"
+REDACT_TSV="${OMEGA_REDACT:-$HOME/.config/omega/redact.tsv}"
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/omega"
+LOCK="$CACHE_DIR/snapshot.lock"
+LOGFILE="$CACHE_DIR/snapshot.log"
+STAMP="$CACHE_DIR/last-snapshot"
+DEBOUNCE_SECS=600
+
+mkdir -p "$CACHE_DIR"
+
+REASON=""
+FORCE=0
+DRYRUN=0
+for arg in "$@"; do
+    case "$arg" in
+        --force)   FORCE=1 ;;
+        --dry-run) DRYRUN=1 ;;
+        --*)       printf 'omega-snapshot: unknown option: %s\n' "$arg" >&2; exit 2 ;;
+        *)         [ -z "$REASON" ] && REASON="$arg" ;;
+    esac
+done
+[ -z "$REASON" ] && REASON="manual snapshot"
+
+log() {
+    printf '%s  %s\n' "$(date '+%Y-%m-%dT%H:%M:%S%z')" "$1" >> "$LOGFILE"
+}
+
+die() {
+    log "ABORT: $1"
+    printf 'omega-snapshot: %s\n' "$1" >&2
+    exit 1
+}
+
+[ -f "$MANIFEST" ]   || die "manifest not found: $MANIFEST"
+[ -f "$REDACT_TSV" ] || die "redaction table not found: $REDACT_TSV"
+
+# --- Python helpers (robust literal replace + leak scan) ---------------------
+redact_tree() {
+    # $1 = directory to scrub in place
+    OMEGA_TSV="$REDACT_TSV" python3 - "$1" <<'PY'
+import os, re, sys
+root = sys.argv[1]
+tsv = os.environ["OMEGA_TSV"]
+subs = []
+with open(tsv, encoding="utf-8") as fh:
+    for line in fh:
+        line = line.rstrip("\n")
+        if not line or line.startswith("#") or "\t" not in line:
+            continue
+        lit, rep = line.split("\t", 1)
+        if lit:
+            subs.append((lit, rep))
+# longest literal first so specific values win over substrings
+subs.sort(key=lambda p: len(p[0]), reverse=True)
+
+mac_re = re.compile(r"(?<![0-9A-Za-z])(?:[0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}(?![0-9A-Za-z])")
+email_re = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")
+priv_ip_re = re.compile(
+    r"\b(?:10(?:\.\d{1,3}){3}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2}"
+    r"|192\.168(?:\.\d{1,3}){2})\b")
+email_keep = ("example.com", "users.noreply.github.com")
+
+def scrub(text):
+    for lit, rep in subs:
+        text = text.replace(lit, rep)
+    text = mac_re.sub("XX:XX:XX:XX:XX:XX", text)
+    text = email_re.sub(
+        lambda m: m.group(0) if m.group(0).endswith(email_keep) else "user@example.com",
+        text)
+    text = priv_ip_re.sub("192.0.2.10", text)
+    return text
+
+for dirpath, dirs, files in os.walk(root):
+    if ".git" in dirs:
+        dirs.remove(".git")
+    for name in files:
+        if name in ("omega-snapshot", "omega-guide", "omega-claude-hook"):
+            continue
+        fp = os.path.join(dirpath, name)
+        try:
+            with open(fp, encoding="utf-8") as fh:
+                data = fh.read()
+        except (UnicodeDecodeError, OSError):
+            continue  # binary / unreadable: leave untouched
+        new = scrub(data)
+        if new != data:
+            with open(fp, "w", encoding="utf-8") as fh:
+                fh.write(new)
+PY
+}
+
+leak_scan() {
+    # $1 = directory to scan. Exit 1 if any secret literal / MAC / non-placeholder
+    # email remains. Never prints the offending value, only file + pattern name.
+    OMEGA_TSV="$REDACT_TSV" python3 - "$1" <<'PY'
+import os, re, sys
+root = sys.argv[1]
+tsv = os.environ["OMEGA_TSV"]
+literals = []
+with open(tsv, encoding="utf-8") as fh:
+    for line in fh:
+        line = line.rstrip("\n")
+        if not line or line.startswith("#") or "\t" not in line:
+            continue
+        lit, _rep = line.split("\t", 1)
+        # ignore structural replacements that aren't themselves secret
+        if lit and lit not in ("$USER",):
+            literals.append(lit)
+
+mac_re = re.compile(r"(?<![0-9A-Za-z])(?:[0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}(?![0-9A-Za-z])")
+email_re = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")
+email_keep = ("example.com", "users.noreply.github.com")
+
+hits = []
+for dirpath, dirs, files in os.walk(root):
+    if ".git" in dirs:
+        dirs.remove(".git")
+    for name in files:
+        if name in ("omega-snapshot", "omega-guide", "omega-claude-hook"):
+            continue
+        fp = os.path.join(dirpath, name)
+        rel = os.path.relpath(fp, root)
+        try:
+            with open(fp, encoding="utf-8") as fh:
+                data = fh.read()
+        except (UnicodeDecodeError, OSError):
+            continue
+        for lit in literals:
+            if lit in data:
+                hits.append(f"{rel}: leftover secret literal")
+                break
+        for m in mac_re.finditer(data):
+            hits.append(f"{rel}: leftover MAC-shaped value")
+            break
+        for m in email_re.finditer(data):
+            if not m.group(0).endswith(email_keep):
+                hits.append(f"{rel}: leftover email address")
+                break
+
+if hits:
+    sys.stderr.write("LEAK GATE FAILED:\n")
+    for h in sorted(set(hits)):
+        sys.stderr.write("  " + h + "\n")
+    sys.exit(1)
+PY
+}
+
+# --- copy the allowlist ------------------------------------------------------
+copy_allowlist() {
+    # $1 = destination repo root (real repo, or a temp dir for --dry-run)
+    local dest_root="$1" src dest mode
+    while IFS=$'\t' read -r src dest mode; do
+        case "$src" in ''|'#'*) continue ;; esac
+        [ -n "$dest" ] || continue
+        # expand $HOME in the source path
+        src="${src/#\$HOME/$HOME}"
+        src="${src//\$HOME/$HOME}"
+        local target="$dest_root/$dest"
+        # glob or directory destination (trailing slash)
+        if [[ "$src" == *"*"* ]]; then
+            mkdir -p "$target"
+            local f
+            for f in $src; do
+                [ -e "$f" ] || continue
+                cp -f "$f" "$target/"
+            done
+            continue
+        fi
+        [ -e "$src" ] || continue   # tolerate missing optional files
+        if [[ "$dest" == */ ]]; then
+            mkdir -p "$target"
+            cp -fL "$src" "$target/"
+        else
+            mkdir -p "$(dirname "$target")"
+            if [ "${mode:-copy}" = "bashrc" ]; then
+                sanitize_bashrc "$src" "$target"
+            else
+                cp -fL "$src" "$target"
+            fi
+        fi
+    done < "$MANIFEST"
+}
+
+sanitize_bashrc() {
+    # drop any GitHub-token block and any line mentioning a secret
+    local src="$1" out="$2"
+    grep -viE 'token|secret|password|api[_-]?key|GH_TOKEN|GITHUB_TOKEN' "$src" > "$out" || true
+}
+
+# --- dry run -----------------------------------------------------------------
+if [ "$DRYRUN" -eq 1 ]; then
+    TMP="$(mktemp -d "${TMPDIR:-/tmp}/omega-dry.XXXXXX")"
+    trap 'rm -rf "$TMP"' EXIT
+    copy_allowlist "$TMP"
+    redact_tree "$TMP"
+    printf '=== omega-snapshot --dry-run: files that would be staged ===\n'
+    (cd "$TMP" && find . -type f | sed 's|^\./||' | sort)
+    printf '=== leak gate ===\n'
+    if leak_scan "$TMP"; then
+        printf 'LEAK GATE: clean\n'
+    else
+        exit 1
+    fi
+    exit 0
+fi
+
+# --- real run (single-flighted) ----------------------------------------------
+exec 9>"$LOCK"
+if ! flock -n 9; then
+    log "another snapshot is running; skipping ($REASON)"
+    exit 0
+fi
+
+# debounce
+if [ "$FORCE" -eq 0 ] && [ -f "$STAMP" ]; then
+    last="$(cat "$STAMP" 2>/dev/null || echo 0)"
+    now="$(date +%s)"
+    if [ $((now - last)) -lt "$DEBOUNCE_SECS" ]; then
+        log "debounced ($REASON); last run $((now - last))s ago"
+        exit 0
+    fi
+fi
+
+cd "$REPO" || die "repo not found: $REPO"
+
+copy_allowlist "$REPO"
+redact_tree "$REPO"
+
+if ! leak_scan "$REPO"; then
+    die "leak gate blocked snapshot ($REASON) — nothing committed"
+fi
+
+export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-$XDG_RUNTIME_DIR/ssh-agent.socket}"
+
+git add -A
+if git diff --cached --quiet; then
+    log "no changes ($REASON)"
+    exit 0
+fi
+
+if git commit -q -m "snapshot: $REASON"; then
+    date +%s > "$STAMP"
+    log "committed: $REASON"
+else
+    die "commit failed (pre-commit hook?) for: $REASON"
+fi
+
+if git remote get-url origin >/dev/null 2>&1; then
+    if git push -q origin main 2>>"$LOGFILE"; then
+        log "pushed: $REASON"
+    else
+        log "push failed (commit kept): $REASON"
+    fi
+else
+    log "no remote configured; commit kept locally: $REASON"
+fi
+
+if command -v console-say >/dev/null 2>&1; then
+    console-say "omega-snapshot: $REASON" info >/dev/null 2>&1 || true
+fi
+
+exit 0

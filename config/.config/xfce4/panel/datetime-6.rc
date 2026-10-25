@@ -1,0 +1,6 @@
+layout=3
+date_font=JetBrainsMono Nerd Font Propo 10
+time_font=JetBrainsMono Nerd Font Propo Bold 10
+date_format=%Y-%m-%d
+time_format=%a %d %b  %H:%M
+

@@ -1,0 +1,11 @@
+[user]
+pinned=thunar;kitty;cursor;com.anthropic.Claude;obsidian;firefox;tor-browser;command-center;spotify-launcher;chromium;
+showPreviews=true
+showWindowCount=true
+indicatorStyle=1
+indicatorOrientation=0
+indicatorColorFromTheme=true
+noWindowsListIfSingle=true
+middleButtonBehavior=0
+previewSleep=120
+previewScale=140

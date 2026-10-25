@@ -1,0 +1,178 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<channel name="xfce4-panel" version="1.0">
+  <property name="configver" type="int" value="2"/>
+  <property name="panels" type="array">
+    <value type="int" value="2"/>
+    <value type="int" value="3"/>
+    <property name="dark-mode" type="bool" value="false"/>
+    <property name="panel-2" type="empty">
+      <property name="position" type="string" value="p=8;x=960;y=1058"/>
+      <property name="size" type="uint" value="42"/>
+      <property name="length" type="double" value="1"/>
+      <property name="plugin-ids" type="array">
+        <value type="int" value="1"/>
+        <value type="int" value="18"/>
+        <value type="int" value="21"/>
+        <value type="int" value="20"/>
+        <value type="int" value="12"/>
+        <value type="int" value="15"/>
+        <value type="int" value="2"/>
+      </property>
+      <property name="enable-struts" type="bool" value="false"/>
+      <property name="enter-opacity" type="uint" value="80"/>
+      <property name="leave-opacity" type="uint" value="80"/>
+      <property name="autohide-behavior" type="uint" value="2"/>
+      <property name="background-style" type="uint" value="0"/>
+      <property name="length-adjust" type="bool" value="true"/>
+    </property>
+    <property name="panel-3" type="empty">
+      <property name="position" type="string" value="p=6;x=960;y=14"/>
+      <property name="position-locked" type="bool" value="true"/>
+      <property name="length" type="double" value="100"/>
+      <property name="size" type="uint" value="28"/>
+      <property name="icon-size" type="uint" value="16"/>
+      <property name="enable-struts" type="bool" value="true"/>
+      <property name="autohide-behavior" type="uint" value="0"/>
+      <property name="plugin-ids" type="array">
+        <value type="int" value="3"/>
+        <value type="int" value="16"/>
+        <value type="int" value="22"/>
+        <value type="int" value="25"/>
+        <value type="int" value="26"/>
+        <value type="int" value="27"/>
+        <value type="int" value="28"/>
+        <value type="int" value="5"/>
+        <value type="int" value="10"/>
+        <value type="int" value="7"/>
+        <value type="int" value="9"/>
+        <value type="int" value="29"/>
+        <value type="int" value="30"/>
+        <value type="int" value="4"/>
+        <value type="int" value="11"/>
+        <value type="int" value="8"/>
+        <value type="int" value="14"/>
+        <value type="int" value="17"/>
+        <value type="int" value="13"/>
+        <value type="int" value="6"/>
+        <value type="int" value="23"/>
+        <value type="int" value="24"/>
+      </property>
+    </property>
+  </property>
+  <property name="plugins" type="empty">
+    <property name="plugin-12" type="string" value="docklike"/>
+    <property name="plugin-17" type="string" value="battery"/>
+    <property name="plugin-20" type="string" value="separator">
+      <property name="expand" type="bool" value="true"/>
+      <property name="style" type="uint" value="0"/>
+    </property>
+    <property name="plugin-4" type="string" value="systray">
+      <property name="known-legacy-items" type="array">
+        <value type="string" value="wi-fi network connection “wifi-9pqj9rf” active: wifi-9pqj9rf (54%)"/>
+        <value type="string" value="wi-fi network connection “wifi-9pqj9rf” active: wifi-9pqj9rf (53%)"/>
+        <value type="string" value="wi-fi network connection “wifi-9pqj9rf” active: wifi-9pqj9rf (66%)"/>
+        <value type="string" value="wi-fi network connection “wifi-9pqj9rf” active: wifi-9pqj9rf (63%)"/>
+        <value type="string" value="wi-fi network connection “wifi-9pqj9rf” active: wifi-9pqj9rf (61%)"/>
+        <value type="string" value="wi-fi network connection “wifi-9pqj9rf” active: wifi-9pqj9rf (62%)"/>
+        <value type="string" value="wi-fi network connection “nothing phone (4a)_6383” active: nothing phone (4a)_6383 (71%)"/>
+        <value type="string" value="wi-fi network connection “nothing phone (4a)_6383” active: nothing phone (4a)_6383 (67%)"/>
+        <value type="string" value="wi-fi network connection “nothing phone (4a)_6383” active: nothing phone (4a)_6383 (68%)"/>
+        <value type="string" value="wi-fi network connection “nothing phone (4a)_6383” active: nothing phone (4a)_6383 (69%)"/>
+        <value type="string" value="networkmanager applet"/>
+        <value type="string" value="wi-fi network connection “wifi-9pqj9rf 2” active: wifi-9pqj9rf (66%)"/>
+      </property>
+      <property name="known-items" type="array">
+        <value type="string" value="Antigravity_status_icon_1"/>
+        <value type="string" value="easyeffects"/>
+        <value type="string" value="blueman"/>
+        <value type="string" value="Trilium Notes_status_icon_1"/>
+        <value type="string" value="spotifast"/>
+        <value type="string" value="Electrum"/>
+      </property>
+    </property>
+    <property name="plugin-6" type="string" value="datetime"/>
+    <property name="plugin-8" type="string" value="pulseaudio">
+      <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
+      <property name="known-players" type="string" value="spotify"/>
+    </property>
+    <property name="plugin-1" type="string" value="xfce-launcher">
+      <property name="icon-name" type="string" value="start-here"/>
+    </property>
+    <property name="plugin-2" type="string" value="screenshooter"/>
+    <property name="plugin-3" type="string" value="whiskermenu">
+      <property name="position-categories-alternate" type="bool" value="true"/>
+      <property name="position-profile-alternate" type="bool" value="true"/>
+      <property name="favorites" type="array">
+        <value type="string" value="xfce4-mail-reader.desktop"/>
+        <value type="string" value="xfce4-file-manager.desktop"/>
+        <value type="string" value="xfce4-terminal-emulator.desktop"/>
+      </property>
+    </property>
+    <property name="plugin-5" type="string" value="genmon">
+      <property name="command" type="string" value="$HOME/.local/bin/genmon-ollama.sh"/>
+      <property name="use-label" type="bool" value="false"/>
+      <property name="text" type="string" value="ollama genmon "/>
+      <property name="update-period" type="int" value="30000"/>
+      <property name="enable-single-row" type="bool" value="true"/>
+      <property name="font" type="string" value="JetBrainsMono Nerd Font Propo Ultra-Light Italic 10"/>
+    </property>
+    <property name="plugin-7" type="string" value="genmon">
+      <property name="command" type="string" value="genmon-thermal.sh"/>
+      <property name="use-label" type="bool" value="false"/>
+      <property name="text" type="string" value="thermal genmon  "/>
+      <property name="update-period" type="int" value="30000"/>
+      <property name="enable-single-row" type="bool" value="true"/>
+      <property name="font" type="string" value="JetBrainsMonoNL Nerd Font Mono Thin 10"/>
+    </property>
+    <property name="plugin-9" type="string" value="separator"/>
+    <property name="plugin-10" type="string" value="separator"/>
+    <property name="plugin-11" type="string" value="separator"/>
+    <property name="plugin-13" type="string" value="separator"/>
+    <property name="plugin-14" type="string" value="separator"/>
+    <property name="plugin-15" type="string" value="separator"/>
+    <property name="plugin-16" type="string" value="separator"/>
+    <property name="plugin-18" type="string" value="separator">
+      <property name="expand" type="bool" value="true"/>
+      <property name="style" type="uint" value="0"/>
+    </property>
+    <property name="plugin-21" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="17928401092.desktop"/>
+      </property>
+    </property>
+    <property name="plugin-22" type="string" value="separator">
+      <property name="expand" type="bool" value="true"/>
+      <property name="style" type="uint" value="0"/>
+    </property>
+    <property name="plugin-23" type="string" value="separator"/>
+    <property name="plugin-24" type="string" value="actions"/>
+    <property name="plugin-25" type="string" value="genmon">
+      <property name="command" type="string" value="$HOME/.local/bin/lab audit --format genmon"/>
+      <property name="use-label" type="bool" value="false"/>
+      <property name="enable-single-row" type="bool" value="true"/>
+      <property name="update-period" type="int" value="300000"/>
+      <property name="font" type="string" value="JetBrainsMono Nerd Font Propo 10"/>
+      <property name="text" type="string" value="(genmon)"/>
+    </property>
+    <property name="plugin-26" type="string" value="separator"/>
+    <property name="plugin-27" type="string" value="genmon">
+      <property name="command" type="string" value="$HOME/.local/bin/lab lines --format genmon"/>
+      <property name="use-label" type="bool" value="false"/>
+      <property name="enable-single-row" type="bool" value="true"/>
+      <property name="update-period" type="int" value="600000"/>
+      <property name="font" type="string" value="JetBrainsMono Nerd Font Propo 10"/>
+      <property name="text" type="string" value="(genmon)"/>
+    </property>
+    <property name="plugin-28" type="string" value="separator"/>
+    <property name="plugin-29" type="string" value="genmon">
+      <property name="command" type="string" value="$HOME/.local/bin/genmon-audio.sh"/>
+      <property name="update-period" type="int" value="3000"/>
+      <property name="use-label" type="bool" value="false"/>
+      <property name="text" type="string" value="audio genmon"/>
+      <property name="enable-single-row" type="bool" value="true"/>
+      <property name="font" type="string" value="JetBrainsMono Nerd Font Propo 10"/>
+    </property>
+    <property name="plugin-30" type="string" value="separator"/>
+  </property>
+</channel>

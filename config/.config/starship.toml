@@ -1,0 +1,56 @@
+# ~/.config/starship.toml
+# Catppuccin Mocha Mauve + AI Telemetry Prompt
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+$python\
+${custom.ollama}\
+$line_break\
+$character"""
+
+right_format = """$cmd_duration"""
+
+palette = "catppuccin_mocha"
+
+[palettes.catppuccin_mocha]
+mauve = "#cba6f7"
+lavender = "#b4befe"
+red = "#f38ba8"
+green = "#a6e3a1"
+yellow = "#f9e2af"
+surface0 = "#313244"
+text = "#cdd6f4"
+
+[directory]
+style = "bold mauve"
+truncation_length = 3
+truncate_to_repo = false
+
+[git_branch]
+style = "bold lavender"
+symbol = " "
+
+[git_status]
+style = "bold red"
+format = "([\\[$all_status$ahead_behind\\]]($style) )"
+
+[python]
+format = "[\\[🐍 $virtualenv\\]]($style) "
+style = "bold green"
+
+[custom.ollama]
+command = "ollama ps 2>/dev/null | awk 'NR==2 {split($1, a, \":\"); print a[1]}'"
+when = "ollama ps 2>/dev/null | grep -q \":\""
+format = "[\\[🤖 $output\\]]($style) "
+style = "bold mauve"
+
+[cmd_duration]
+min_time = 2_000
+format = "[$duration]($style)"
+style = "yellow"
+
+[character]
+success_symbol = "[❯](bold mauve)"
+error_symbol = "[❯](bold red)"

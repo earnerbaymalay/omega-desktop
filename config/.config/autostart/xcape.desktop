@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Xcape Super Key Mapping
+Comment=Maps standalone Super (Windows) key to Alt+F1 for application launcher
+Exec=/usr/bin/xcape -e 'Super_L=Alt_L|F1'
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+StartupNotify=false
+Terminal=false

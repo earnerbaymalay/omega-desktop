@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# omega-claude-hook — Claude Code PostToolUse hook.
+# Reads the tool-call JSON on stdin; if the Skill invoked is the
+# endeavouros-assistant skill, fire a background omega-snapshot. Always exits 0
+# so it can never block Claude Code.
+
+set -u
+
+payload="$(cat 2>/dev/null || true)"
+
+skill=""
+if command -v jq >/dev/null 2>&1; then
+    skill="$(printf '%s' "$payload" | jq -r '.tool_input.skill // empty' 2>/dev/null || true)"
+fi
+
+case "$skill" in
+    *endeavouros-assistant*)
+        if command -v omega-snapshot >/dev/null 2>&1; then
+            omega-snapshot "claude: endeavouros-assistant skill" >/dev/null 2>&1 &
+        fi
+        ;;
+esac
+
+exit 0

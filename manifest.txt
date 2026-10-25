@@ -1,0 +1,56 @@
+# omega-desktop snapshot allowlist
+# ONLY paths listed here are ever copied into the repo. Everything else is
+# excluded by default. Format (tab-separated):
+#
+#     <source path>    <repo-relative destination>    [mode]
+#
+# - Globs are allowed in the source path.
+# - Missing sources are skipped silently (optional components tolerated).
+# - mode "bashrc" strips secret/token lines on copy; default mode is a plain copy.
+# - $HOME expands to the current user's home.
+#
+# EXCLUDED ALWAYS (never add these): ~/.ssh, ~/.config/gh, ~/.gemini tokens,
+# NetworkManager system-connections, /etc/hosts, known_hosts, *.pem, *.key,
+# shell history. The redaction table + leak gate are the backstop.
+
+# --- XFCE (xfconf channels + panel plugin configs) ---
+$HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml	config/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml
+$HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml	config/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+$HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml	config/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+$HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml	config/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml
+$HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml	config/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
+$HOME/.config/xfce4/panel/*.rc	config/.config/xfce4/panel/
+
+# --- Terminal / shell ---
+$HOME/.config/kitty/kitty.conf	config/.config/kitty/kitty.conf
+$HOME/.config/starship.toml	config/.config/starship.toml
+$HOME/.bashrc	config/.bashrc	bashrc
+
+# --- Autostart (only our own launchers) ---
+$HOME/.config/autostart/xcape.desktop	config/.config/autostart/xcape.desktop
+$HOME/.config/autostart/ssh-add-github.desktop	config/.config/autostart/ssh-add-github.desktop
+$HOME/.config/autostart/easyeffects.desktop	config/.config/autostart/easyeffects.desktop
+
+# --- Audio (WirePlumber rules + scripts; may not exist yet) ---
+$HOME/.config/wireplumber/wireplumber.conf.d/*	config/.config/wireplumber/wireplumber.conf.d/
+$HOME/.local/bin/q1-mode	bin/q1-mode
+$HOME/.local/bin/audio-switch	bin/audio-switch
+$HOME/.local/bin/genmon-audio.sh	bin/genmon-audio.sh
+
+# --- Top-bar genmon widgets ---
+$HOME/.local/bin/genmon-ollama.sh	bin/genmon-ollama.sh
+$HOME/.local/bin/genmon-thermal.sh	bin/genmon-thermal.sh
+
+# --- Console / agy / command-center scripts (resolved from Scripts/) ---
+$HOME/Desktop/AI CLI WORK/Scripts/claude-console	bin/claude-console
+$HOME/Desktop/AI CLI WORK/Scripts/console-say	bin/console-say
+$HOME/Desktop/AI CLI WORK/Scripts/console-inbox	bin/console-inbox
+$HOME/Desktop/AI CLI WORK/Scripts/agy-menu	bin/agy-menu
+$HOME/Desktop/AI CLI WORK/Scripts/agy-widget	bin/agy-widget
+$HOME/Desktop/AI CLI WORK/Scripts/command-center	bin/command-center
+$HOME/Desktop/AI CLI WORK/Scripts/command_center.py	bin/command_center.py
+$HOME/Desktop/AI CLI WORK/Scripts/git-security-hook.sh	bin/git-security-hook.sh
+$HOME/Desktop/AI CLI WORK/Scripts/backup-system-configs.sh	bin/backup-system-configs.sh
+
+# --- System launcher toggle ---
+/usr/local/bin/xfce-launcher-toggle	bin/xfce-launcher-toggle

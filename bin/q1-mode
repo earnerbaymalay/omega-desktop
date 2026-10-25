@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# q1-mode [music|call|status] — flip the Q1 Bluetooth receiver between
+#   music : A2DP (SBC-XQ if offered, else SBC) — stereo, full quality, NO mic loopback
+#   call  : HFP (mSBC, else CVSD) — mono 16/8 kHz, opens Q1's mic (can cause feedback!)
+#   status: show the active profile + codec
+# Added 2026-10-25 (Omega audio setup). Undo: rm ~/.local/bin/q1-mode
+set -euo pipefail
+
+MAC=XX:XX:XX:XX:XX:XX
+CARD=bluez_card.33_00_1F_72_86_60
+SINK_PAT=bluez_output.33_00_1F_72_86_60
+SRC_PAT=bluez_input.33_00_1F_72_86_60
+
+notify() { command -v notify-send >/dev/null && notify-send -i "$1" "Q1" "$2" 2>/dev/null || true; echo "$2"; }
+
+card_block() {
+    pactl list cards | awk -v c="Name: $CARD" 'index($0,c){f=1} f&&/^Card #/&&seen{exit} f{print; seen=1}'
+}
+
+has_profile() {
+    card_block | sed -n '/Profiles:/,/Active Profile/p' | grep -qE "^[[:space:]]+$1: .*available: yes"
+}
+
+connected() { pactl list short cards | grep -q "$CARD"; }
+
+ensure_connected() {
+    if ! connected; then
+        bluetoothctl connect "$MAC" >/dev/null 2>&1 || true
+        for _ in $(seq 20); do connected && return 0; sleep 0.5; done
+        notify dialog-warning "Q1 not connected (is it powered and in range?)"
+        exit 1
+    fi
+}
+
+default_to() { # $1 = short-list type (sinks|sources), $2 = name pattern
+    local name id
+    name=$(pactl list short "$1" | awk -v p="$2" '$2 ~ p && $2 !~ /\.monitor$/ {print $2; exit}')
+    [[ -n "$name" ]] || return 1
+    pactl "set-default-${1%s}" "$name"
+    # move running streams too (sinks only)
+    if [[ "$1" == sinks ]]; then
+        for id in $(pactl list short sink-inputs | cut -f1); do
+            pactl move-sink-input "$id" "$name" 2>/dev/null || true
+        done
+    fi
+}
+
+case "${1:-status}" in
+    music)
+        ensure_connected
+        for p in a2dp-sink-sbc_xq a2dp-sink; do
+            if has_profile "$p"; then pactl set-card-profile "$CARD" "$p"; break; fi
+        done
+        sleep 1
+        default_to sinks "$SINK_PAT" || true
+        default_to sources 'alsa_input.*analog-stereo' || true
+        notify audio-speakers "Music (A2DP) — Q1 stereo, laptop mic for calls"
+        ;;
+    call)
+        ensure_connected
+        echo "WARNING: HFP opens Q1's mic path. With the amp + speakers this can feed back." >&2
+        for p in headset-head-unit headset-head-unit-cvsd; do
+            if has_profile "$p"; then pactl set-card-profile "$CARD" "$p"; break; fi
+        done
+        sleep 1
+        default_to sinks "$SINK_PAT" || true
+        default_to sources "$SRC_PAT" || true
+        wpctl set-mute @DEFAULT_AUDIO_SOURCE@ 0
+        notify audio-headset "Call mode (HFP) — mono; run 'q1-mode music' when done"
+        ;;
+    status)
+        if connected; then
+            card_block | grep -m1 'Active Profile'
+            pactl list sinks | awk -v s="$SINK_PAT" 'index($0,"Name: " s){f=1} f&&/api.bluez5.codec/{print "\tCodec: " $3; exit}' | tr -d '"'
+        else
+            echo "Q1 not connected"
+        fi
+        ;;
+    *)
+        echo "usage: q1-mode [music|call|status]" >&2; exit 2 ;;
+esac

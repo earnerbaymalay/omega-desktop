@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Toggle xfce-panel-launcher fullscreen overlay
+PLUGIN_ID=$(xfconf-query -c xfce4-panel -lv 2>/dev/null | awk '$2 == "xfce-launcher" {print $1}' | grep -o "[0-9]*" | head -n 1)
+PLUGIN_ID="${PLUGIN_ID:-1}"
+xfce4-panel --plugin-event="xfce-launcher-${PLUGIN_ID}:popup:bool:true" 2>/dev/null

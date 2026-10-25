@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# omega-guide — open a kitty window with a tmux session: README rendered by
+# glow on the left (~55%), an interactive shell on the right.
+
+set -u
+
+REPO="${OMEGA_REPO:-$HOME/omega-desktop}"
+SESSION="omega-guide"
+README="$REPO/README.md"
+
+launch_tmux() {
+    tmux kill-session -t "$SESSION" 2>/dev/null || true
+    tmux new-session -d -s "$SESSION" -c "$REPO" "glow -p '$README'"
+    tmux split-window -h -t "$SESSION" -c "$REPO" "bash -l"
+    # left pane ~55% width
+    local width
+    width="$(tmux display-message -p -t "$SESSION" '#{window_width}' 2>/dev/null || echo 0)"
+    if [ "${width:-0}" -gt 0 ]; then
+        tmux resize-pane -t "$SESSION".0 -x $((width * 55 / 100)) 2>/dev/null || true
+    fi
+    tmux select-pane -t "$SESSION".1
+    tmux attach-session -t "$SESSION"
+}
+
+if [ "${OMEGA_GUIDE_INNER:-}" = "1" ]; then
+    launch_tmux
+    exit 0
+fi
+
+if command -v kitty >/dev/null 2>&1 && [ -n "${DISPLAY:-}" ]; then
+    exec kitty --title "Omega Guide" --class omega-guide \
+        bash -lc "OMEGA_GUIDE_INNER=1 '$0'"
+else
+    # no display / no kitty: run inline
+    OMEGA_GUIDE_INNER=1 launch_tmux
+fi

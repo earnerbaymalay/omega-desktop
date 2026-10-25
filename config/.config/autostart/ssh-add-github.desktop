@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=ssh-add GitHub key
+Comment=Load id_ed25519_github into ssh-agent using passphrase from login keyring
+Exec=$HOME/.local/bin/ssh-add-github
+Terminal=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
