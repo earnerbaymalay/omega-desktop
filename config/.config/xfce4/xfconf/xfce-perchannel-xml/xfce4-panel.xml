@@ -94,7 +94,7 @@
     <property name="plugin-6" type="string" value="datetime"/>
     <property name="plugin-8" type="string" value="pulseaudio">
       <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
-      <property name="known-players" type="string" value="spotify"/>
+      <property name="known-players" type="string" value="Chromium;spotify"/>
     </property>
     <property name="plugin-1" type="string" value="xfce-launcher">
       <property name="icon-name" type="string" value="start-here"/>
