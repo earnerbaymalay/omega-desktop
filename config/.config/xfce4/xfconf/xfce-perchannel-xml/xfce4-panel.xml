@@ -27,7 +27,7 @@
       <property name="length-adjust" type="bool" value="true"/>
     </property>
     <property name="panel-3" type="empty">
-      <property name="position" type="string" value="p=6;x=960;y=14"/>
+      <property name="position" type="string" value="p=6;x=960;y=16"/>
       <property name="position-locked" type="bool" value="false"/>
       <property name="length" type="double" value="100"/>
       <property name="size" type="uint" value="28"/>
