@@ -84,6 +84,7 @@
         <value type="string" value="wi-fi network connection “wifi-9pqj9rf 2” active: wifi-9pqj9rf (66%)"/>
       </property>
       <property name="known-items" type="array">
+        <value type="string" value="flameshot"/>
         <value type="string" value="Claude_status_icon_1"/>
         <value type="string" value="Antigravity_status_icon_1"/>
         <value type="string" value="easyeffects"/>
