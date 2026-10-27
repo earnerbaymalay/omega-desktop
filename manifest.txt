@@ -30,6 +30,7 @@ $HOME/.bashrc	config/.bashrc	bashrc
 $HOME/.config/autostart/xcape.desktop	config/.config/autostart/xcape.desktop
 $HOME/.config/autostart/ssh-add-github.desktop	config/.config/autostart/ssh-add-github.desktop
 $HOME/.config/autostart/easyeffects.desktop	config/.config/autostart/easyeffects.desktop
+$HOME/.config/autostart/screensaver-rotation.desktop	config/.config/autostart/screensaver-rotation.desktop
 
 # --- Audio (WirePlumber rules + scripts; may not exist yet) ---
 $HOME/.config/wireplumber/wireplumber.conf.d/*	config/.config/wireplumber/wireplumber.conf.d/
@@ -53,6 +54,7 @@ $HOME/Desktop/AI CLI WORK/Scripts/command_center.py	bin/command_center.py
 $HOME/Desktop/AI CLI WORK/Scripts/git-security-hook.sh	bin/git-security-hook.sh
 $HOME/Desktop/AI CLI WORK/Scripts/backup-system-configs.sh	bin/backup-system-configs.sh
 $HOME/Desktop/AI CLI WORK/Scripts/screensaver	bin/screensaver
+$HOME/.local/share/applications/screensavers/kiosk-screensaver.desktop	config/.local/share/applications/screensavers/kiosk-screensaver.desktop
 $HOME/Desktop/AI CLI WORK/Scripts/ps2-startup	bin/ps2-startup
 
 # --- System launcher toggle ---
