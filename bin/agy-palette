@@ -27,12 +27,18 @@ if [[ "$MODE" == "claude" ]]; then
 
     # Common development & tools for Claude
     CMD_MAP["[LAB] lab audit — Prime Directive privacy & stealth audit"]="kitty --hold lab audit"
+    CMD_MAP["[LAB] lab pentest — Automated scoped capture, hash extract & AI audit"]="kitty --title 'Automated RF Pentest' bash -c 'lab pentest; echo; read -p \"Press enter to close...\"'"
     CMD_MAP["[LAB] lab status — Command Center telemetry dashboard"]="kitty --title 'Command Center Dashboard' lab status -w"
     CMD_MAP["[DEV] lg — Lazygit TUI with Delta pager"]="kitty --directory '$WORKSPACE_DIR' lazygit"
     CMD_MAP["[DEV] venv — Open workspace terminal with venv"]="kitty --directory '$WORKSPACE_DIR' bash -i -c 'venv; exec bash'"
     CMD_MAP["[DEV] clip / clippaste — Inspect system clipboard content"]="kitty --title 'Clipboard Content' --hold bash -c 'echo \"── Clipboard (xclip) ──\"; xclip -selection clipboard -o 2>/dev/null || echo \"Clipboard empty\"; echo'"
     CMD_MAP["[DEV] synapse — Open Synapse Gateway workspace"]="kitty --directory '$SYNAPSE_DIR'"
     CMD_MAP["[SEC] sec-audit — Pre-commit secret audit & quality check"]="kitty --hold '$WORKSPACE_DIR/Scripts/git-security-hook.sh'"
+    CMD_MAP["[PENTEST] 🎯 Auto Pentest Workflow — Scoped capture, hash extract & AI audit"]="kitty --title 'Automated RF Pentest Workflow' bash -c '$WORKSPACE_DIR/pentest-scope/auto-pentest.sh; echo; read -p \"Press enter to close...\"'"
+    CMD_MAP["[PENTEST] 📡 rf-lab status — Wireless monitor posture, uplink & BPF state"]="kitty --hold rf-lab status"
+    CMD_MAP["[PENTEST] 🔍 rf-lab scan — Passive Wi-Fi beacon & AP survey (wlan0)"]="kitty --hold rf-lab scan"
+    CMD_MAP["[PENTEST] 🤖 rf-lab analyze — AI security audit on latest PCAP"]="kitty --title 'AI PCAP Analysis' bash -c 'latest=\$(ls -t \$HOME/captures/*.pcap* 2>/dev/null | head -1); if [[ -n \"\$latest\" ]]; then rf-lab analyze \"\$latest\"; else echo \"No captures found in ~/captures\"; fi; echo; read -p \"Press enter to close...\"'"
+    CMD_MAP["[PENTEST] 📂 rf-lab findings — Inspect captured PCAPs, hashes & reports"]="kitty --hold rf-lab findings"
     CMD_MAP["[KB] ai-log — Quick entry into Obsidian Daily Digest"]="kitty --title 'Obsidian Daily Note' bash -c 'read -e -p \"Daily note: \" note; [[ -n \"\$note\" ]] && source ~/.bashrc && ai-log \"\$note\" && notify-send -i document-save \"Obsidian\" \"Saved daily log: \$note\"'"
     CMD_MAP["[KB] ai-notes — Open Obsidian AI Knowledge Base"]="obsidian"
     CMD_MAP["[UI] screensaver — 4K Fluid & Cyber Screensaver (Kiosk)"]="screensaver"
@@ -61,6 +67,7 @@ else
 
     # Lab Toolkit & Lines Attribution
     CMD_MAP["[LAB] lab audit — Prime Directive privacy & stealth audit"]="kitty --hold lab audit"
+    CMD_MAP["[LAB] lab pentest — Automated scoped capture, hash extract & AI audit"]="kitty --title 'Automated RF Pentest' bash -c 'lab pentest; echo; read -p \"Press enter to close...\"'"
     CMD_MAP["[LAB] lab lines — Count vibe-coded vs hand-coded lines (24h)"]="kitty --hold lab lines --hours 24"
     CMD_MAP["[LAB] lab status — Command Center telemetry dashboard"]="kitty --title 'Command Center Dashboard' lab status -w"
     CMD_MAP["[LAB] lab backup — Backup system configs & dotfiles"]="kitty --hold lab backup"
@@ -96,7 +103,18 @@ else
     CMD_MAP["[KB] ai-log — Quick entry into Obsidian Daily Digest"]="kitty --title 'Obsidian Daily Note' bash -c 'read -e -p \"Daily note: \" note; [[ -n \"\$note\" ]] && source ~/.bashrc && ai-log \"\$note\" && notify-send -i document-save \"Obsidian\" \"Saved daily log: \$note\"'"
     CMD_MAP["[KB] ai-kb search — Search Obsidian AI Vault"]="kitty --title 'Search Obsidian AI KB' bash -c 'read -e -p \"Search query: \" q; [[ -n \"\$q\" ]] && source ~/.bashrc && ai-kb search \"\$q\"; echo; read -p \"Press enter to close...\"'"
     CMD_MAP["[KB] ai-kb ask — Query local LLM and archive insight"]="kitty --title 'Ask & Archive to Obsidian' bash -c 'read -e -p \"Prompt for AI KB: \" q; [[ -n \"\$q\" ]] && source ~/.bashrc && ai-kb ask \"\$q\"; echo; read -p \"Press enter to close...\"'"
-    CMD_MAP["[PENTEST] mitm-harvest — Intercept & harvest auth tokens"]="kitty --directory '$WORKSPACE_DIR' uv run mitmproxy -s mitmproxy-tools/token_harvester.py"
+    # RF & Pentest Lab Workflows
+    CMD_MAP["[PENTEST] 🎯 Auto Pentest Workflow — Scoped capture, hash extract & AI audit"]="kitty --title 'Automated RF Pentest Workflow' bash -c '$WORKSPACE_DIR/pentest-scope/auto-pentest.sh; echo; read -p \"Press enter to close...\"'"
+    CMD_MAP["[PENTEST] 📡 rf-lab status — Wireless monitor posture, uplink & BPF state"]="kitty --hold rf-lab status"
+    CMD_MAP["[PENTEST] 🔍 rf-lab scan — Passive Wi-Fi beacon & AP survey (wlan0)"]="kitty --hold rf-lab scan"
+    CMD_MAP["[PENTEST] 🛡️ rf-lab scope list — View authorized in-scope targets"]="kitty --hold rf-lab scope list"
+    CMD_MAP["[PENTEST] ⚙️ rf-lab scope build — Recompile hardware BPF filter"]="kitty --hold rf-lab scope build"
+    CMD_MAP["[PENTEST] 🤖 rf-lab analyze — AI security audit on latest PCAP"]="kitty --title 'AI PCAP Analysis' bash -c 'latest=\$(ls -t \$HOME/captures/*.pcap* 2>/dev/null | head -1); if [[ -n \"\$latest\" ]]; then rf-lab analyze \"\$latest\"; else echo \"No captures found in ~/captures\"; fi; echo; read -p \"Press enter to close...\"'"
+    CMD_MAP["[PENTEST] 🌊 wavescope 2.4G — Launch 40 MHz RF spectrum visualizer"]="wavescope --interface wlan0 --channel 6 --width 40 --output \$HOME/captures/wavescope_2.4g.pcap"
+    CMD_MAP["[PENTEST] 🌊 wavescope 5G — Launch 80 MHz RF spectrum visualizer (Ceiling)"]="wavescope --interface wlan0 --channel 40 --band 5g --width 80 --output \$HOME/captures/wavescope_5g.pcap"
+    CMD_MAP["[PENTEST] 🪓 mitm-harvest — Intercept & harvest auth tokens (:8080)"]="kitty --directory '$WORKSPACE_DIR' uv run mitmproxy -s mitmproxy-tools/token_harvester.py"
+    CMD_MAP["[PENTEST] 🌐 mitmweb — Web GUI proxy analyzer (:8081 -> :8080)"]="kitty --directory '$WORKSPACE_DIR' rf-lab mitm web"
+    CMD_MAP["[PENTEST] 📂 rf-lab findings — Inspect captured PCAPs, hashes & reports"]="kitty --hold rf-lab findings"
 
     # UI & Appearance
     CMD_MAP["[UI] screensaver — 4K Fluid & Cyber Screensaver (Kiosk)"]="screensaver"
