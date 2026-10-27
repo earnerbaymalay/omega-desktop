@@ -52,6 +52,7 @@ $HOME/Desktop/AI CLI WORK/Scripts/command-center	bin/command-center
 $HOME/Desktop/AI CLI WORK/Scripts/command_center.py	bin/command_center.py
 $HOME/Desktop/AI CLI WORK/Scripts/git-security-hook.sh	bin/git-security-hook.sh
 $HOME/Desktop/AI CLI WORK/Scripts/backup-system-configs.sh	bin/backup-system-configs.sh
+$HOME/Desktop/AI CLI WORK/Scripts/screensaver	bin/screensaver
 
 # --- System launcher toggle ---
 /usr/local/bin/xfce-launcher-toggle	bin/xfce-launcher-toggle
