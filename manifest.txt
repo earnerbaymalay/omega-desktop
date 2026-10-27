@@ -45,6 +45,7 @@ $HOME/.local/bin/genmon-thermal.sh	bin/genmon-thermal.sh
 $HOME/Desktop/AI CLI WORK/Scripts/claude-console	bin/claude-console
 $HOME/Desktop/AI CLI WORK/Scripts/console-say	bin/console-say
 $HOME/Desktop/AI CLI WORK/Scripts/console-inbox	bin/console-inbox
+$HOME/Desktop/AI CLI WORK/Scripts/agy-palette	bin/agy-palette
 $HOME/Desktop/AI CLI WORK/Scripts/agy-menu	bin/agy-menu
 $HOME/Desktop/AI CLI WORK/Scripts/agy-widget	bin/agy-widget
 $HOME/Desktop/AI CLI WORK/Scripts/command-center	bin/command-center

@@ -241,8 +241,8 @@ ai() {
         help|cmd|commands|widget)
             ai-help
             ;;
-        menu)
-            agy-menu
+        menu|palette)
+            agy-palette
             ;;
         "")
             ai status
@@ -321,6 +321,8 @@ alias font-tune="$HOME/Desktop/AI CLI WORK/font-tune.sh"
 
 # --- Antigravity Suite & System Security Baked Commands ---
 alias cc='command-center'
+alias agy-palette='agy-palette'
+alias agy-menu='agy-palette'
 alias agy-cmd='agy-widget'
 alias agy-help='agy-widget'
 alias sys-backup='$HOME/Desktop/AI\ CLI\ WORK/Scripts/backup-system-configs.sh'
