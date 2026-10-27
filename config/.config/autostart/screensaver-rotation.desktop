@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Screensaver Startup Rotation
+Comment=Rotates Kiosk Screensaver between Theme #4 & #5 per startup
+Exec=$HOME/.local/bin/screensaver --startup-hook
+Terminal=false
+StartupNotify=false
+OnlyShowIn=XFCE;
+X-XFCE-Autostart-Priority=2
+X-XFCE-Autostart-enabled=true

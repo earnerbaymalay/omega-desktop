@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Omni Kiosk Screensaver
+Comment=Subtle 4K Fluid / Chromatic Aurora / Omarchy ASCII Screensaver
+Exec=$HOME/.local/bin/screensaver
+TryExec=$HOME/.local/bin/screensaver
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Screensaver;
+OnlyShowIn=XFCE;
