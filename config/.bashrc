@@ -342,3 +342,14 @@ fi
 if [ -z "$SSH_AUTH_SOCK" ] || [ "$SSH_AUTH_SOCK" = "${XDG_RUNTIME_DIR:-/run/user/$UID}/gcr/ssh" ]; then
     export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR:-/run/user/$UID}/ssh-agent.socket"
 fi
+
+# Synapse AI Core & LLM Quickfire Suite
+alias syn-sync='synapse sync --once'
+alias syn-doc='synapse doctor'
+alias syn-hud='synapse hud'
+alias syn-vibe='synapse vibe'
+alias syn-mem='synapse mem'
+alias quickfire='quickfire'
+alias qf='quickfire'
+alias qf-theme='quickfire-theme'
+
